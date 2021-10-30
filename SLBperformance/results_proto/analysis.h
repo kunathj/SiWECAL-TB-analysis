@@ -316,33 +316,44 @@ void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int la
 	TCanvas* canvastemp= new TCanvas("temp","temp",100,100);   
 	canvastemp->cd();
 	//GetGoodEntries
-	TH1F *temp=(TH1F*)_file0->Get(TString::Format("layer_%i/charge_layer%i_chip%i_chn%i",layer,layer,i,j));
-	if(temp==NULL) continue;
-	temp->Rebin(4);
+	TH1F *temp_charge_hist=(TH1F*)_file0->Get(TString::Format("layer_%i/charge_layer%i_chip%i_chn%i",layer,layer,i,j));
+	if(temp_charge_hist==NULL){
+    delete canvastemp; continue;
+  }
+	// temp_charge_hist->Rebin(4);
 
-	MIPN->Fill(map_pointX[i][j],map_pointY[i][j],temp->GetEntries());
-
+	MIPN->Fill(map_pointX[i][j],map_pointY[i][j],temp_charge_hist->GetEntries());
 	 Double_t fr[2];
 	 Double_t sv[4], pllo[4], plhi[4], fp[4], fpe[4];   
-	 pllo[0]=1.0; pllo[1]=15; pllo[2]=1.0; pllo[3]=1;
+	 pllo[0]=0.5; pllo[1]=15; pllo[2]=1.0; pllo[3]=0;
 	 plhi[0]=100.0; plhi[1]=100.0; plhi[2]=100000000.0; plhi[3]=20.0;
-	 sv[0]=15.0;
 	 Double_t chisqr;
 	 Int_t    ndf;
-
-	 
-	 if(temp->GetEntries()>10){
+   
+	 temp_charge_hist->GetXaxis()->SetRangeUser(fr[0], fr[1]);
+	 if(temp_charge_hist->Integral() > 10){ // At least 10 entries in the fit range.
 	   fr[0]=15;
-	   fr[1]=150;//fr[0]+0.5*temp->GetRMS();
-	   TF1 *fitsnr_temp=langaufit(temp,fr,sv,pllo,plhi,fp,fpe,&chisqr,&ndf);
+	   fr[1]=150;//fr[0]+0.5*temp_charge_hist->GetRMS();
+     // Temporarily reset the hist range for more robust starting values.
+     temp_charge_hist->GetXaxis()->SetRangeUser(fr[0], fr[1]);
+	   sv[0] = temp_charge_hist->GetRMS() * 0.25;
+	   sv[1] = temp_charge_hist->GetMean() * 0.67;
+	   sv[2] = temp_charge_hist->Integral("width") * 1.2;
+	   sv[3] = temp_charge_hist->GetRMS()* 0.1;
+	   TF1 *fitsnr_temp=langaufit(temp_charge_hist,fr,sv,pllo,plhi,fp,fpe,&chisqr,&ndf);
+     //std::cout << layer << "  " << i << " " << j << std::endl << std::flush;
+     for (int k = 0; k < 4; k++) {
+       if ((sv[k] >= pllo[k]) && (sv[k] <= plhi[k])) continue;
+       std::cout << "Langaus fit parameter " << k << " has starting value " << sv[k] 
+            <<  " outside the range [" << pllo[k] << ", " << plhi[k] << "]!" << std::endl;
+     }
 	
 	   double mpv=fitsnr_temp->GetParameter(1);
 	   double empv=fitsnr_temp->GetParError(1);
 	   double wmpv=fitsnr_temp->GetParameter(0);
 	   double chi2ndf=0;
-	   fout_mip<<layer<<" "<<i<<" "<<j<<" "<<mpv<<" "<<empv<<" "<<wmpv<<" "<<chi2ndf<<" "<<temp->GetEntries()<<"\n";
-
-	   if(ndf>0) chi2ndf=chisqr/ndf;
+	   if(ndf > 0) chi2ndf = chisqr / ndf;
+	   fout_mip<<layer<<" "<<i<<" "<<j<<" "<<mpv<<" "<<empv<<" "<<wmpv<<" "<<chi2ndf<<" "<<temp_charge_hist->GetEntries()<<"\n";
 
 	   MIPM->Fill(i,j,mpv);
 	   MIPM_xy->Fill(map_pointX[i][j],map_pointY[i][j],mpv);
@@ -350,23 +361,24 @@ void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int la
 	   MIPW->Fill(map_pointX[i][j],map_pointY[i][j],wmpv);
 
 	   canvas_mip->cd(j+1);
-	   temp->GetXaxis()->SetRangeUser(0,200);
-	   temp->GetXaxis()->SetLabelSize(0.1);
-	   temp->GetYaxis()->SetLabelSize(0.1);
-	   float ymax=temp->GetMaximum();
-	   temp->GetYaxis()->SetRangeUser(0,ymax*1.5);
-	   temp->SetName(TString::Format("mip_chip%i_chn%i",i,j));
-	   temp->Draw();
+	   temp_charge_hist->GetXaxis()->SetRangeUser(0,200);
+	   temp_charge_hist->GetXaxis()->SetLabelSize(0.1);
+	   temp_charge_hist->GetYaxis()->SetLabelSize(0.1);
+	   float ymax=temp_charge_hist->GetMaximum();
+	   temp_charge_hist->GetYaxis()->SetRangeUser(0,ymax*1.5);
+	   temp_charge_hist->SetName(TString::Format("mip_chip%i_chn%i",i,j));
+	   temp_charge_hist->Draw();
 	   cdhisto->cd();
-	   temp->Write();
+	   temp_charge_hist->Write();
 	   TLatex t;
 	   t.SetTextSize(0.15);
 	   t.SetTextAlign(13);  //align at top
- 	   t.DrawLatex(10,ymax*1.5,TString::Format("N=%i",int(temp->GetEntries())));
+ 	   t.DrawLatex(10,ymax*1.5,TString::Format("N=%i",int(temp_charge_hist->GetEntries())));
 	   t.DrawLatex(10,ymax*1.15,TString::Format("MPV=%.1f",mpv));
 	 } else {
            fout_mip<<layer<<" "<<i<<" "<<j<<" "<<0<<" "<<0<<" "<<0<<" "<<0<<" "<<0<<"\n";
 	 }
+  delete canvastemp;
       }
       file->cd();
       //canvas_mip->Print(TString::Format("plots/MIPs_%s_layer_%i_chip%i.eps",run.Data(),layer,i));
