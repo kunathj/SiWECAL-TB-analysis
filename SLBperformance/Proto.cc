@@ -46,13 +46,13 @@ int Proto(TString filename_in, TString output="", TString type="pedestal",
     }
   }
   
-  for(int islab=0; islab<nslabs; islab++) {
+  for(int i_slboard = 0; i_slboard < nslabs; i_slboard++) {
     TString map_name="../mapping/fev10_chip_channel_x_y_mapping.txt";
-    if ( std::find(cob_positions.begin(), cob_positions.end(), islab) != cob_positions.end() ) {
+    if ( std::find(cob_positions.begin(), cob_positions.end(), i_slboard) != cob_positions.end() ) {
         map_name = "../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
     }
     cout<<filename_in<<" "<<output<<" islboard " <<i_slboard<<endl;
-    ss.ReadMap(map,i_slboard);
+    ss.ReadMap(map_name, i_slboard);
     if(type=="retriggers") ss.Retriggers(i_slboard,output,4);
   }
   

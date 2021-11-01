@@ -335,10 +335,10 @@ void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int la
 	 Double_t chisqr;
 	 Int_t    ndf;
    
+	fr[0]=15;
+	fr[1]=150;//fr[0]+0.5*temp_charge_hist->GetRMS();
 	 temp_charge_hist->GetXaxis()->SetRangeUser(fr[0], fr[1]);
 	 if(temp_charge_hist->Integral() > 10){ // At least 10 entries in the fit range.
-	   fr[0]=15;
-	   fr[1]=150;//fr[0]+0.5*temp_charge_hist->GetRMS();
      // Temporarily reset the hist range for more robust starting values.
      temp_charge_hist->GetXaxis()->SetRangeUser(fr[0], fr[1]);
 	   sv[0] = temp_charge_hist->GetRMS() * 0.25;
