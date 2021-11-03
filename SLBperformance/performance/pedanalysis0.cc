@@ -14,7 +14,7 @@ using namespace std;
 Float_t map_pointX[16][64];
 Float_t map_pointY[16][64];
 
-void ReadMap(TString filename="/home/irles/WorkAreaECAL/2019/SiWECAL-TB-analysis/mapping/fev10_chip_channel_x_y_mapping.txt")   
+void ReadMap(TString filename="../../mapping/fev10_chip_channel_x_y_mapping.txt")   
 {
 
   std::ifstream reading_file(filename);
@@ -58,8 +58,8 @@ void pedanalysis0(TString run="Run_ILC_cosmic_test_11222019", int slboard=2){
   gStyle->SetMarkerSize(1.2);
   
   // Comparing nbr entries in tag or not tag // GetWidth and Mean
-  TString map="/home/irles/WorkAreaECAL/2019/SiWECAL-TB-analysis/mapping/fev10_chip_channel_x_y_mapping.txt";
-  if(slboard==0 || slboard==2)  map="/home/irles/WorkAreaECAL/2019/SiWECAL-TB-analysis/mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  TString map="../../mapping/fev10_chip_channel_x_y_mapping.txt";
+  if(slboard==0 || slboard==2)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
   
@@ -193,4 +193,3 @@ void pedanalysis0(TString run="Run_ILC_cosmic_test_11222019", int slboard=2){
    
   canvas2->Print(TString::Format("plots/PedAna2_%s_SLB_%i.eps",run.Data(),slboard));
 }
-

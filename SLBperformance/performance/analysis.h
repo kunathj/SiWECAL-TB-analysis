@@ -129,7 +129,7 @@ TF1* langaufit(TH1F *his, Double_t *fitrange, Double_t *startvalues, Double_t *p
 
 }
 
-void ReadMap(TString filename="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis/mapping/fev10_chip_channel_x_y_mapping.txt")
+void ReadMap(TString filename="../../mapping/fev10_chip_channel_x_y_mapping.txt")
 {
 
   std::ifstream reading_file(filename);
@@ -172,8 +172,8 @@ void pedanalysis(TFile *file, TString run="Run_ILC_cosmic_test_11222019", int sl
   gStyle->SetMarkerSize(1.2);
   
   // Comparing nbr entries in tag or not tag // GetWidth and Mean
-  TString map="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis-git/mapping/fev10_chip_channel_x_y_mapping.txt";
-  //  if(slboard==0 || slboard==2)  map="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis/mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  TString map="../../mapping/fev10_chip_channel_x_y_mapping.txt";
+  //  if(slboard==0 || slboard==2)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
   
@@ -350,8 +350,8 @@ void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int sl
   cdhisto->cd();
 
     // Comparing nbr entries in tag or not tag // GetWidth and Mean
-  TString map="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis-git/mapping/fev10_chip_channel_x_y_mapping.txt";
-  //  if(slboard==0 || slboard==2)  map="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis/mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  TString map="../../mapping/fev10_chip_channel_x_y_mapping.txt";
+  //  if(slboard==0 || slboard==2)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
   
@@ -493,8 +493,8 @@ void retriggeranalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", 
   cdhisto->cd();
 
     // Comparing nbr entries in tag or not tag // GetWidth and Mean
-  TString map="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis-git/mapping/fev10_chip_channel_x_y_mapping.txt";
-  //  if(slboard==0 || slboard==2)  map="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis/mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  TString map="../../mapping/fev10_chip_channel_x_y_mapping.txt";
+  //  if(slboard==0 || slboard==2)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
   

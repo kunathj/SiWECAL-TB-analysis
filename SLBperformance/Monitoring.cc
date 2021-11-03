@@ -11,7 +11,7 @@ void Monitoring(TString filename_in, TString output="", int freq=1, bool shifter
   cout<<" Monitoring of file: "<<filename_in<<endl;
   DecodedSLBAnalysis ss(filename_in);
 
-  TString map="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis/mapping/fev10_chip_channel_x_y_mapping.txt";
+  TString map="../mapping/fev10_chip_channel_x_y_mapping.txt";
 
   for(int i_layer=0; i_layer<15; i_layer++) {
     if(i_layer==8 || i_layer==12) map="../mapping/fev11_cob_chip_channel_x_y_mapping.txt";

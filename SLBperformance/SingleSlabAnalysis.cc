@@ -9,9 +9,9 @@ void SingleSlabAnalysis(TString filename_in, TString output="", int i_slboard=2)
 
   TString map="../mapping/fev10_chip_channel_x_y_mapping.txt";
   //if(i_slboard==8 || i_slboard==12) map="../mapping/fev11_cob_chip_channel_x_y_mapping.txt"; 
-  /*  if(i_slboard==0) map="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis/mapping/fev11_cob_chip_channel_x_y_mapping.txt";
-  if(i_slboard==1) map="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis/mapping/fev10_chip_channel_x_y_mapping.txt"; 
-  if(i_slboard==2) map="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis/mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  /*  if(i_slboard==0) map="../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  if(i_slboard==1) map="../mapping/fev10_chip_channel_x_y_mapping.txt"; 
+  if(i_slboard==2) map="../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   */
   gStyle->SetOptFit(1);
 
