@@ -293,10 +293,9 @@ void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int la
   if(cob==1)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
-  
-  TFile *_file0 = TFile::Open(TString::Format("MIPs_15_layers_%s.root",run.Data()));
-
-  cout<< TString::Format("MIPs_15_layers_%s.root",run.Data()) <<endl;
+  auto mip_data_root_name = TString::Format("MIPs_15_layers_%s.root",run.Data());
+  TFile *_file0 = TFile::Open(mip_data_root_name);
+  std::cout << std::left << std::setw(80) << mip_data_root_name << std::endl;
   TH2F* MIPW =new TH2F("MIPW","MIPW",32,-90,90,32,-90,90);
   TH2F* MIPM_xy=new TH2F("MIPM_xy","MIPM_xy",32,-90,90,32,-90,90);
   TH2F* MIPM=new TH2F(TString::Format("MIPM_slbooard_%i",layer),TString::Format("MIPM_slbooard_%i",layer),16,-0.5,15.5,64,-0.5,63.5);
@@ -307,12 +306,18 @@ void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int la
   fout_mip<<"#mip results PROTO15"<<endl;
   fout_mip<<"#layer chip channel mpv empv widthmpv chi2ndf nentries"<<endl;
 
+  std::string progress_bar;
+  double bar_width = 30;
   for(int i=0;i<nchips;i++){
-    
     TCanvas* canvas_mip= new TCanvas(TString::Format("MIPs_layer_%i_chip%i",layer,i),TString::Format("MIPs_layer_%i_chip%i",layer,i),1600,1600);   
       canvas_mip->Divide(8,8);
 
       for(int j=0; j<64; j++) {
+        if (((i * 64) + j) * bar_width / (nchips * 64) > progress_bar.length()) progress_bar.push_back('#');
+        std::cout << std::flush << "MIP layer " << std::right << setw(2) << layer
+                  << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                  << std::right << std::setw(2) << j << "/" << 64 << " channels, " 
+                  << std::right << setw(2) << i << "/" << nchips << " chips\r";
 	TCanvas* canvastemp= new TCanvas("temp","temp",100,100);   
 	canvastemp->cd();
 	//GetGoodEntries
@@ -448,6 +453,5 @@ void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int la
   delete  canvas;
   delete  canvas2;
   file->Close();
-  
+  std::cout << "Finished the MIP analysis for layer " << layer << std::setw(50) << " " << std::endl;
 }
-

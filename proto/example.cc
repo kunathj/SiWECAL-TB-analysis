@@ -171,15 +171,21 @@ void example::SimpleEvDisplayTrack(TString outputname="")
   // -----------------------------------------------------------------------------------------------------   
   // Signal readout
   Long64_t nbytes = 0, nb = 0;
+  std::string progress_bar;
+  double bar_width = 30;
+  int delta_progress_bar = nentries / 20.;
   //  nentries=500000;
   for (Long64_t jentry=0; jentry<nentries;jentry++){//nentries-100;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
     if(ntracks>499) break;
-
-    int fivepercent=nentries/20;
-    if( (jentry % fivepercent) == 0 ) cout<< "Progress: "<<100.*jentry/nentries<<" %" <<endl;
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Simple track event display "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
 
     if( bcid<50 || (bcid>899 && bcid<930)) continue;
     if(TrackBasicSelection()==false) continue;
@@ -241,15 +247,20 @@ void example::SimpleDistributionsTrack(TString outputname="")
   // -----------------------------------------------------------------------------------------------------   
   // Signal readout
   Long64_t nbytes = 0, nb = 0;
+  std::string progress_bar;
+  double bar_width = 30;
+  int delta_progress_bar = nentries / 20.;
   //  nentries=500000;
   for (Long64_t jentry=0; jentry<nentries;jentry++){//nentries-100;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-
-    int fivepercent=nentries/20;
-    if( (jentry % fivepercent) == 0 ) cout<< "Progress: "<<100.*jentry/nentries<<" %" <<endl;
-
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Simple track distribution "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
     if( bcid<50 || (bcid>899 && bcid<950)) continue;
     if(TrackTightSelection()==false) continue;
 
@@ -531,5 +542,3 @@ TF1* example::langaufit(TH1F *his, Double_t *fitrange, Double_t *startvalues, Do
   return (ffit);              // return fit function
 
 }
-
-

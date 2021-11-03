@@ -131,6 +131,9 @@ private :
   std::vector<std::vector<std::vector<std::vector<Double_t> > > > ped_error_slboard;
   std::vector<std::vector<std::vector<std::vector<Double_t> > > > ped_width_slboard;
 
+  int bar_width = 30;
+  int delta_progress_bar = 100;
+
 
 
 };

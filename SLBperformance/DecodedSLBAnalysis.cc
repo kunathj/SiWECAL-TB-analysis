@@ -85,11 +85,17 @@ void DecodedSLBAnalysis::SlowControlMonitoring(TString outputname="SlowControlMo
   // Signal readout
   Long64_t nbytes = 0, nb = 0;
   int n_SLB=0;
+  std::string progress_bar;
   for (Long64_t jentry=0; jentry<nentries;jentry+=ngraph) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Slow control "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
     if(jentry==0) n_SLB=n_slboards;
 
     if ( jentry % (ngraph) !=0 ) continue;
@@ -278,11 +284,17 @@ void DecodedSLBAnalysis::HitMapsSimpleTracks(TString outputname="HitMapsSimpleTr
   Long64_t nbytes = 0, nb = 0;
   int n_SLB=0;
   int n=0;
+  std::string progress_bar;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Hit maps simple tracks "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
 
     if(jentry==0) n_SLB=n_slboards;
 
@@ -344,11 +356,17 @@ void DecodedSLBAnalysis::SynchronizationStudies(TString outputname="testMonitori
   Long64_t nbytes = 0, nb = 0;
   int n_SLB=0;
   int n=0;
+  std::string progress_bar;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Synchronization studies "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
 
     if(jentry==0) n_SLB=n_slboards;
 
@@ -409,11 +427,17 @@ void DecodedSLBAnalysis::QuickDisplay(TString outputname="QuickDisplay", int nla
   Long64_t nbytes = 0, nb = 0;
   int n_SLB=0;
   int n=0;
+  std::string progress_bar;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Quick display "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
 
     if(jentry==0) n_SLB=n_slboards;
 
@@ -508,7 +532,8 @@ int DecodedSLBAnalysis::NSlabsAnalysis(TString outputname="", TString analysis_t
 	std::vector<TH1F*> pedtemp_sca2;
 	std::vector<TH1F*> pedtemp_sca2_tagged;
 	
-	for(int isca=0; isca<15; isca++) {
+  int n_scas = 15;
+	for(int isca=0; isca<n_scas; isca++) {
 	  TH1F *ped_sca2 = new TH1F(TString::Format("ped_layer%i_chip%i_chn%i_sca%i",ilayer,ichip,ichn,isca),TString::Format("ped_layer%i_chip%i_chn%i_sca%i",ilayer,ichip,ichn,isca),1000,0.5,1000.5);
 	  TH1F *ped_sca2_tagged = new TH1F(TString::Format("ped_tagged_layer%i_chip%i_chn%i_sca%i",ilayer,ichip,ichn,isca),TString::Format("ped_tagged_layer%i_chip%i_chn%i_sca%i",ilayer,ichip,ichn,isca),1000,0.5,1000.5);
 	  pedtemp_sca2.push_back(ped_sca2);
@@ -530,6 +555,7 @@ int DecodedSLBAnalysis::NSlabsAnalysis(TString outputname="", TString analysis_t
   if(analysis_type=="all" || analysis_type=="pedestal") {
     // -----------------------------------------------------------------------------------------------------   
     // PEDESTAL - SCA analysis
+    std::string progress_bar;
     for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
@@ -540,8 +566,10 @@ int DecodedSLBAnalysis::NSlabsAnalysis(TString outputname="", TString analysis_t
       if(n_slboards>nSLB) nSLB=n_slboards;
       //  }
       
-      
-    if ( jentry > 10 && jentry % 10 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Pedestal "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
 
       for(int ilayer=0; ilayer<n_slboards; ilayer++) {
 	for(int ichip=0; ichip<16; ichip++) {
@@ -762,12 +790,18 @@ int DecodedSLBAnalysis::NSlabsAnalysis(TString outputname="", TString analysis_t
     // Signal readout
     nbytes = 0;
     nb = 0;
+    std::string progress_bar;
     for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
-      if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
-      
+      if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+        if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+        std::cout << std::flush << "MIP histos "
+                  << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                  << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+      }
+          
       for(int ilayer=0; ilayer<n_slboards; ilayer++) {
 	//	cout<<ilayer<<endl;
 	
@@ -981,11 +1015,21 @@ void DecodedSLBAnalysis::SynchronizationStudies(TString outputname="testMonitori
   // Signal readout
   Long64_t nbytes = 0, nb = 0;
   int n_SLB=0;
+  std::string progress_bar;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+    for (Long64_t jentry=0; jentry<nentries;jentry++) {
+      Long64_t ientry = LoadTree(jentry);
+      if (ientry < 0) break;
+      nb = fChain->GetEntry(jentry);   nbytes += nb;
+      if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+        if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+        std::cout << std::flush << "Synchronization studies "
+                  << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                  << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+      }
 
     if(jentry==0) n_SLB=n_slboards;
 
@@ -1099,11 +1143,17 @@ void DecodedSLBAnalysis::Monitoring(TString outputname="testMonitoring", int fre
   // Signal readout
   Long64_t nbytes = 0, nb = 0;
   int n_SLB=0;
+  std::string progress_bar;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Monitoring "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
 
     if(jentry==0) n_SLB=n_slboards;
 
@@ -1477,11 +1527,17 @@ void DecodedSLBAnalysis::SignalAnalysis(int i_layer, TString outputname="", int 
   // Signal readout
   Long64_t nbytes = 0, nb = 0;
   //  nentries=1000;
+  std::string progress_bar;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Signal analysis "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
 
     std::array<int,4096> bcid_seen = SimpleCoincidenceTagger(jentry,maxnhit);
 
@@ -2073,12 +2129,17 @@ void DecodedSLBAnalysis::PedestalAnalysis(int i_layer,TString outputname="", int
   // SCA analysis
   Long64_t nbytes = 0, nb = 0;
   //  nentries=1000;
+  std::string progress_bar;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Pedestal "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
 
 
     std::array<int,4096> bcid_seen = SimpleCoincidenceTagger(jentry,maxnhit);
@@ -2596,12 +2657,17 @@ void DecodedSLBAnalysis::Retriggers(int i_layer, TString outputname="",int maxnh
   // SCA analysis
   Long64_t nbytes = 0, nb = 0;
   // nentries=50000;
+  std::string progress_bar;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Retriggers "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
 
     for(int islboard=0; islboard<n_slboards; islboard++) {
       if(islboard != i_layer) continue;
@@ -2956,4 +3022,3 @@ TF1* DecodedSLBAnalysis::langaufit(TH1F *his, Double_t *fitrange, Double_t *star
   return (ffit);              // return fit function
 
 }
-
