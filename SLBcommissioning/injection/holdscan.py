@@ -15,8 +15,8 @@ args = parser.parse_args()
 
 run_name = "20200226_dac1.15V_chn0to3"
 data_folder = "/home/calice/hecgc/Run_data/"  #pc-calice2 -> "/mnt/win2/Run_data/"
-converter_folder = "/home/calice/hecgc/SiWECAL-TB-analysis/converter_SLB/"  #pc-calice2 -> "/home/calice/TB2020/commissioning/SiWECAL-TB-analysis_TB2020/..."
-injection_folder = "/home/calice/hecgc/SiWECAL-TB-analysis/SLBcommissioning/injection/"  #pc-calice2 -> "/home/calice/TB2020/commissioning/SiWECAL-TB-analysis_TB2020/..."
+converter_folder = "../../converter_SLB/"  #pc-calice2 -> "/home/calice/TB2020/commissioning/SiWECAL-TB-analysis_TB2020/..."
+injection_folder = "../../SLBcommissioning/injection/"  #pc-calice2 -> "/home/calice/TB2020/commissioning/SiWECAL-TB-analysis_TB2020/..."
 
 if args.run:
     run_name = args.run

@@ -14,7 +14,7 @@
 #include "TF1.h"
 #include "TMath.h"
 
-void LinearityGraphs(TString filename_in="/home/calice/TB2020/commissioning/SiWECAL-TB-analysis_TB2020/converter_SLB/convertedfiles/",
+void LinearityGraphs(TString filename_in="../../converter_SLB/convertedfiles/",
 		       TString run="calib_02272020_pa1.2fb_trig230_chn0.8.16.24_calib_small_Ascii", int nslboards=6){
   
   cout<<" Injection folder: "<<filename_in<<endl;
@@ -176,4 +176,3 @@ void LinearityGraphs(TString filename_in="/home/calice/TB2020/commissioning/SiWE
 				 
   
 }
-

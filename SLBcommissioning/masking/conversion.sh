@@ -6,11 +6,11 @@
 run="run_050001_25062021_19h25min_Ascii"
 
 data_folder="/mnt/win2/Run_Data/"${run}"/"
-
-output=${PWD}"/../../converter_SLB/convertedfiles/"${run}"/"
+repo_top_level=$(dirname $(dirname $(dirname $(realpath $BASH_SOURCE))))
+output="${repo_top_level}/converter_SLB/convertedfiles/"${run}"/"
 mkdir $output
 
-cd ../../converter_SLB
+cd ${repo_top_level}/converter_SLB
 root -l -q ConvertDirectorySL.cc\(\"${data_folder}\",false,\"${output}\"\)
 hadd ${output}/${run}.root ${output}/*.root
 cd -
