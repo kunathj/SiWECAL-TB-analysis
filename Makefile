@@ -86,7 +86,7 @@ build_from_parts : ${BUILD_PARTS}
 # Read mask from settings
 #
 ${MASKED} : ${TMP_RAW}/Run_Settings.txt
-	cd SLBcommissioning; root -l -q -b test_read_masked_channels_summary.C\(\"$(basename $^)\"\)
+	cd SLBcommissioning; root -l -q -b test_read_masked_channels_summary.C\(\"$(basename $^)\",\"'${COBS}'\"\)
 	mv $(basename $^)_masked.txt $@
 
 ${TMP_RAW}/Run_Settings.txt : ${RAW_DATA_DIR}/Run_Settings.txt.tar.gz

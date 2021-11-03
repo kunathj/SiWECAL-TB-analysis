@@ -3,7 +3,7 @@
 #include "conf_struct.h"
 
 
-void test_read_masked_channels(TString filename="15102021/Run_Settings_DataTaking_TB2021_15102021", bool debug=true) {
+void test_read_masked_channels(TString filename="15102021/Run_Settings_DataTaking_TB2021_15102021", TString cob_positions_str="") {
   read_configuration_file(filename+".txt",true);
 
   TH2F* mask_chip_chn[15];
@@ -34,8 +34,28 @@ void test_read_masked_channels(TString filename="15102021/Run_Settings_DataTakin
   fout<<"#masked_chns_list layer chip chns (0=not masked, 1=masked)"<<endl;
 
   int nslabs=15;
+  // Process the cob positions string.
+  std::vector<int> cob_positions;
+  if ( cob_positions_str != "" ) {
+    if (!cob_positions_str.IsDigit()) {
+      throw std::invalid_argument( "Invalid COB positions string: " + cob_positions_str);
+    }
+    TString tok;
+    Ssiz_t from = 0;
+    while (cob_positions_str.Tokenize(tok, from)) cob_positions.push_back(tok.Atoi());
+    std::set<int> cob_positions_set(cob_positions.begin(), cob_positions.end());
+    if ((cob_positions_set.size() != cob_positions.size()) ||
+        (*std::max_element(cob_positions.begin(), cob_positions.end()) >= nslabs) ||
+        (*std::min_element(cob_positions.begin(), cob_positions.end()) < 0)) {
+          throw std::invalid_argument( "Invalid COB positions string: " + cob_positions_str);
+    }
+  }
+  
   for(int islab=0; islab<nslabs; islab++) {
     TString map_name="../mapping/fev10_chip_channel_x_y_mapping.txt";
+    if ( std::find(cob_positions.begin(), cob_positions.end(), islab) != cob_positions.end() ) {
+        map_name = "../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+    }
 
     // the two cobs are equipped with slboards 2.08 and 2.12 (26th May 2020)
     //    if(detector.slab[0][islab].add==8 || detector.slab[0][islab].add==12)
