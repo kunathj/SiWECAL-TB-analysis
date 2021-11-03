@@ -11,6 +11,7 @@
 
 run="Run_ILC_06042020_cosmic_14_Ascii"
 data_folder="/mnt/win2/Run_Data/"${run}"/"
+cob_positions=""  # "5 8"
 
 repo_top_level=$(dirname $(dirname $(dirname $(realpath $BASH_SOURCE))))
 mkdir "${repo_top_level}/converter_SLB/convertedfiles/"${run}
@@ -21,4 +22,4 @@ root -l -q ConvertDirectorySL.cc\(\"${data_folder}\",false,\"${output}\"\)
 hadd ${output}/${run}.root ${output}/*.root 
 cd -
 
-root -l DummyDisplay.cc\(\"${output}/${run}\",\"${run}\"\) 
+root -l DummyDisplay.cc\(\"${output}/${run}\",\"${run}\",7,\"$cob_positions\"\) 

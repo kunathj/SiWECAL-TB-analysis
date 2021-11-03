@@ -2,7 +2,7 @@
 
 
  
-void analysis(TString run, int slboard) {
+void analysis(TString run, int slboard, bool is_cob=false) {
 
   gROOT->Reset();
   //SetIrlesStyle();
@@ -18,13 +18,11 @@ void analysis(TString run, int slboard) {
   gStyle->SetTitleFontSize(0.05);
   gStyle->SetMarkerSize(1.2);
 
-
-  int cob=0;
-  //  if(slboard==8 || slboard==12) cob=1;
-  triggers(run, slboard,cob);
+  //  if(slboard==8 || slboard==12) is_cob=1;
+  triggers(run, slboard, is_cob);
 
   TFile *file = new TFile(TString::Format("plots/layer_%i_%s.root",slboard,run.Data()) , "RECREATE");  
-  mipanalysis(file,run, slboard,cob);
+  mipanalysis(file,run, slboard,is_cob);
   file->Close();
 
 }

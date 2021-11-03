@@ -41,7 +41,7 @@ void ReadMap(TString filename="../../mapping/fev10_chip_channel_x_y_mapping.txt"
 }
 
 
-void pedanalysis0(TString run="Run_ILC_cosmic_test_11222019", int slboard=2){
+void pedanalysis0(TString run="Run_ILC_cosmic_test_11222019", int slboard=2, bool is_cob=false){
   
   gROOT->Reset();
   //SetIrlesStyle();
@@ -59,7 +59,7 @@ void pedanalysis0(TString run="Run_ILC_cosmic_test_11222019", int slboard=2){
   
   // Comparing nbr entries in tag or not tag // GetWidth and Mean
   TString map="../../mapping/fev10_chip_channel_x_y_mapping.txt";
-  if(slboard==0 || slboard==2)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  if(is_cob) map = "../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
   

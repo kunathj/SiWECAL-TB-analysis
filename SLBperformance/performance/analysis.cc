@@ -2,7 +2,7 @@
 
 
  
-void analysis(TString run, int slboard) {
+void analysis(TString run, int slboard, bool is_cob=false) {
 
   gROOT->Reset();
   //SetIrlesStyle();
@@ -19,9 +19,9 @@ void analysis(TString run, int slboard) {
   gStyle->SetMarkerSize(1.2);
 
   TFile *file = new TFile(TString::Format("plots/slboard_%i_%s.root",slboard,run.Data()) , "RECREATE");
-  pedanalysis(file,run, slboard);
-  mipanalysis(file,run, slboard);
-  retriggeranalysis(file,run, slboard);
+  pedanalysis(file, run, slboard, is_cob);
+  mipanalysis(file, run, slboard, is_cob);
+  retriggeranalysis(file, run, slboard, is_cob);
   file->Close();
 
 }

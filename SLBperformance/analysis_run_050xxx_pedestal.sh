@@ -3,8 +3,7 @@
 #run
 run="run_050010"
 run_file="converted.dat"
-#ascii folder
-#rootfiles folder
+cob_positions=""  # "5 8"
 output=${PWD}"/../converter_SLB/convertedfiles/run_050010_07172021_13h52min_Ascii/"
 
 initial_folder=$PWD
@@ -25,7 +24,7 @@ do
     fi
     #analysis
     cd $initial_folder
-    root -l -q Proto.cc\(\"${output}/${run_file}_$j\",\"${run}_$j\",\"pedestal\"\) 
+    root -l -q Proto.cc\(\"${output}/${run_file}_$j\",\"${run}_$j\",\"pedestal\",\"\",\"${cob_positions}\"\)
     cd ${initial_folder}/results_proto/
     if [ $i -gt 1 ]; then
 	hadd Pedestal_new.root Pedestal_15_layers_${run}_${j}.root Pedestal_15_layers_${run}.root

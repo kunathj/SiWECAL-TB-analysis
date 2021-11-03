@@ -3,6 +3,7 @@
 #run
 run="run_050010"
 run_file="converted.dat"
+cob_positions=""  # "5 8"
 output=${PWD}"/../converter_SLB/convertedfiles/run_050010_07172021_13h52min_Ascii/"
 
 initial_folder=$PWD
@@ -24,7 +25,7 @@ do
     fi
     #analysis
     cd $initial_folder
-    root -l -q Proto.cc\(\"${output}/${run_file}_$j\",\"${run}_$j\",\"mip\",\"../pedestals/Pedestal_${run}.txt\"\)
+    root -l -q Proto.cc\(\"${output}/${run_file}_$j\",\"${run}_$j\",\"mip\",\"../pedestals/Pedestal_${run}.txt\",\"${cob_positions}\"\)
 
 done
 

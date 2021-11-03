@@ -3,6 +3,8 @@ RUN=run_050016_10192021_21h49min_Ascii
 COMMISSIONING_TAG=PROTO15_run_050016
 WOLFRAM_CONFIG=0
 SLABS=0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
+# COBS=1 11 5 8
+COBS=
 
 # Depending on your setup, you might have to change these as well.
 RAW_DATA_DIR=/eos/project/s/siw-ecal/TB2021-11/commissioning/data/run_050XXX/${RUN}
@@ -56,11 +58,11 @@ ${DATA_CONVERTED} : ${CONVERTED_PARTS}
 ${CONVERTED_DIR}/${RUN}_build.root : ${DATA_CONVERTED} \
         $(PEDESTALS) $(MIP_CALIB) $(MASKED)
 	cd eventbuilding; ./build_events.py $(word 1,$^)\
-		--w_config ${WOLFRAM_CONFIG}\
+		--w_config ${WOLFRAM_CONFIG} --cob_positions__string "${COBS}"\
 		--out_file_name $@\
 		--pedestals_file $(word 2,$^)\
 		--mip_calibration_file $(word 3,$^)\
-		--masked_file $(word 4,$^)  --max_entries -1
+		--masked_file $(word 4,$^)  --max_entries 25
 
 
 # -----------------------------------------------------------------------------
@@ -93,7 +95,7 @@ PEDESTAL_ROOT=${PWD}/SLBperformance/results_pedestal/${PEDESTAL_PREFIX}${COMMISS
 # ${TMP_PEDESTALS}/${PEDESTAL_PREFIX}${COMMISSIONING_TAG}_%.root : ${TMP_CONVERTED_PARTS}/converted.%.root
 # 	@echo "[Make] Pedestal analysis preparation with part of the data."
 # 	@mkdir -p ${TMP_PEDESTALS}
-# 	cd SLBperformance; root -l -q Proto.cc\(\"$(basename $(word 1,$^))\",\"${COMMISSIONING_TAG}_$*\",\"pedestal\"\)
+# 	cd SLBperformance; root -l -q Proto.cc\(\"$(basename $(word 1,$^))\",\"${COMMISSIONING_TAG}_$*\",\"pedestal\",\"\",\"'${COBS}'\"\)
 # 	mv SLBperformance/results_proto/${PEDESTAL_PREFIX}${COMMISSIONING_TAG}_$*.root $@
 #
 # ${PEDESTAL_ROOT} : ${PEDESTAL_PARTS}
@@ -101,7 +103,7 @@ PEDESTAL_ROOT=${PWD}/SLBperformance/results_pedestal/${PEDESTAL_PREFIX}${COMMISS
 
 ${PEDESTAL_ROOT} : ${DATA_CONVERTED}
 	@echo "[Make] Create pedestal histograms"
-	cd SLBperformance; root -l -q Proto.cc\(\"$(basename $(word 1,$^))\",\"${COMMISSIONING_TAG}\",\"pedestal\"\)
+	cd SLBperformance; root -l -q Proto.cc\(\"$(basename $(word 1,$^))\",\"${COMMISSIONING_TAG}\",\"pedestal\",\"\",\"'${COBS}'\"\)
 	mv SLBperformance/results_proto/${PEDESTAL_PREFIX}${COMMISSIONING_TAG}.root $@
 
 ${PEDESTALS} : ${PEDESTAL_ROOT}
@@ -120,7 +122,7 @@ MIP_ROOT=${PWD}/SLBperformance/results_mipcalibration/${MIP_PREFIX}${COMMISSIONI
 MIP_ROOT_IN_PROTO_FOLDER=${PWD}/SLBperformance/results_proto/${MIP_PREFIX}${COMMISSIONING_TAG}.root
 ${MIP_ROOT} : ${DATA_CONVERTED} ${PEDESTALS}
 	@echo "[Make] Calibrate MIPs"
-	cd SLBperformance; root -l -q Proto.cc\(\"$(basename $(word 1,$^))\",\"${COMMISSIONING_TAG}\",\"mip\",\"$(word 2,$^)\"\)
+	cd SLBperformance; root -l -q Proto.cc\(\"$(basename $(word 1,$^))\",\"${COMMISSIONING_TAG}\",\"mip\",\"$(word 2,$^)\",\"'${COBS}'\"\)
 	cp SLBperformance/results_proto/${MIP_PREFIX}${COMMISSIONING_TAG}.root $@
 
 ${MIP_CALIB} : $(addprefix SLBperformance/results_proto/MIPs_layer_,$(addsuffix _${COMMISSIONING_TAG},${SLABS}))
@@ -135,17 +137,18 @@ ${MIP_ROOT_IN_PROTO_FOLDER} : ${MIP_ROOT}
 	
 SLBperformance/results_proto/MIPs_layer_%_${COMMISSIONING_TAG} : ${MIP_ROOT_IN_PROTO_FOLDER}
 	@echo "[Make] MIP for slab #$*"
-	cd SLBperformance/results_proto; root -l -q -b analysis.cc\(\"${COMMISSIONING_TAG}\",$*\)
+	@# The $(words $(filter $*,${COBS})) construction: 1 if SLAB in COBS, else 0 -> true/false. 
+	cd SLBperformance/results_proto; root -l -q -b analysis.cc\(\"${COMMISSIONING_TAG}\",$*,$(words $(filter $*,${COBS}))\)
 
 # -----------------------------------------------------------------------------
 #
 # Appendix: Some more scripts as Makefile commands.
 #
 retriggers : ${DATA_CONVERTED}
-	cd SLBperformance; root -l -q Proto.cc\(\"$(basename $(word 1,$^))\",\"${COMMISSIONING_TAG}\",\"retriggers\"\)
+	cd SLBperformance; root -l -q Proto.cc\(\"$(basename $(word 1,$^))\",\"${COMMISSIONING_TAG}\",\"retriggers\",\"\",\"'${COBS}'\"\)
 
 monitoring : monitoring_7 monitoring_10
 
 monitoring_% : ${DATA_CONVERTED}
 	cd SLBperformance;\
-	root -l -q DummyDisplay.cc\(\"$(basename $(word 1,$^))\",\"${COMMISSIONING_TAG}\",$*\)
+	root -l -q DummyDisplay.cc\(\"$(basename $(word 1,$^))\",\"${COMMISSIONING_TAG}\",$*,$(words $(filter $*,${COBS}))\)

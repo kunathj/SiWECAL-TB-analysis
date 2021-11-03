@@ -155,7 +155,7 @@ void ReadMap(TString filename="../../mapping/fev10_chip_channel_x_y_mapping.txt"
 
 }
 
-void pedanalysis(TFile *file, TString run="Run_ILC_cosmic_test_11222019", int slboard=2){
+void pedanalysis(TFile *file, TString run="Run_ILC_cosmic_test_11222019", int slboard=2, bool is_cob=false){
   
   gROOT->Reset();
   //SetIrlesStyle();
@@ -173,7 +173,7 @@ void pedanalysis(TFile *file, TString run="Run_ILC_cosmic_test_11222019", int sl
   
   // Comparing nbr entries in tag or not tag // GetWidth and Mean
   TString map="../../mapping/fev10_chip_channel_x_y_mapping.txt";
-  //  if(slboard==0 || slboard==2)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  if(is_cob)  map = "../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
   
@@ -327,7 +327,7 @@ void pedanalysis(TFile *file, TString run="Run_ILC_cosmic_test_11222019", int sl
 }
 
 
-void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int slboard=2){
+void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int slboard=2, bool is_cob=false){
   
   gROOT->Reset();
   //SetIrlesStyle();
@@ -351,7 +351,7 @@ void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int sl
 
     // Comparing nbr entries in tag or not tag // GetWidth and Mean
   TString map="../../mapping/fev10_chip_channel_x_y_mapping.txt";
-  //  if(slboard==0 || slboard==2)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  if(is_cob)  map = "../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
   
@@ -470,7 +470,7 @@ void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int sl
 }
 
 
-void retriggeranalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int slboard=2){
+void retriggeranalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int slboard=2, bool is_cob=false){
   
   gROOT->Reset();
   //SetIrlesStyle();
@@ -494,7 +494,7 @@ void retriggeranalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", 
 
     // Comparing nbr entries in tag or not tag // GetWidth and Mean
   TString map="../../mapping/fev10_chip_channel_x_y_mapping.txt";
-  //  if(slboard==0 || slboard==2)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  if(is_cob)  map = "../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
   

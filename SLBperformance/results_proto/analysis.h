@@ -156,7 +156,7 @@ void ReadMap(TString filename="../../mapping/fev10_chip_channel_x_y_mapping.txt"
 }
 
 
-void triggers( TString run="Run_ILC_cosmic_test_11222019", int layer=2, int cob=0){
+void triggers( TString run="Run_ILC_cosmic_test_11222019", int layer=2, bool is_cob=false){
   
   gROOT->Reset();
   //SetIrlesStyle();
@@ -178,7 +178,7 @@ void triggers( TString run="Run_ILC_cosmic_test_11222019", int layer=2, int cob=
 
     // Comparing nbr entries in tag or not tag // GetWidth and Mean
   TString map="../../mapping/fev10_chip_channel_x_y_mapping.txt";
-  if(cob==1)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  if (is_cob) map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
   TFile *_file0 = TFile::Open(TString::Format("MIPs_15_layers_%s.root",run.Data()));
@@ -196,7 +196,7 @@ void triggers( TString run="Run_ILC_cosmic_test_11222019", int layer=2, int cob=
   trig->GetXaxis()->SetTitle("CHIP");
   trig->GetYaxis()->SetTitle("chn");
   float nchn=1024.;
-  if(cob==1) nchn=256.;
+  if(is_cob) nchn=256.;
   float zmin=trig->GetEntries()/nchn-5*trig->GetEntries()/nchn;
   float zmax=trig->GetEntries()/nchn+5*trig->GetEntries()/nchn;
   float n_average=0;
@@ -213,7 +213,7 @@ void triggers( TString run="Run_ILC_cosmic_test_11222019", int layer=2, int cob=
   zmin=average*(1-3);
   zmax=average*(1+3);
   if(zmin<0) zmin =0;
-  if(cob==1) zmax=550;
+  if(is_cob) zmax=550;
 
   trig->GetZaxis()->SetRangeUser(zmin,zmax);
   trig->Draw("colz");
@@ -265,7 +265,7 @@ void triggers( TString run="Run_ILC_cosmic_test_11222019", int layer=2, int cob=
 
 
 
-void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int layer=2, int cob=0){
+void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int layer=2, bool is_cob=false){
   
   gROOT->Reset();
   //SetIrlesStyle();
@@ -290,7 +290,7 @@ void mipanalysis(TFile* file, TString run="Run_ILC_cosmic_test_11222019", int la
 
     // Comparing nbr entries in tag or not tag // GetWidth and Mean
   TString map="../../mapping/fev10_chip_channel_x_y_mapping.txt";
-  if(cob==1)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
+  if(is_cob)  map="../../mapping/fev11_cob_chip_channel_x_y_mapping.txt";
   ReadMap(map);
 
   auto mip_data_root_name = TString::Format("MIPs_15_layers_%s.root",run.Data());

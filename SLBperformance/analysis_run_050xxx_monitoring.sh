@@ -3,7 +3,7 @@
 run="run_050010"
 run_file="converted.dat"
 output=${PWD}"/../converter_SLB/convertedfiles/run_050010_07172021_13h52min_Ascii/"
-
+cob_positions=""  # "5 8"
 
 initial_folder=$PWD
 
@@ -24,9 +24,9 @@ do
     #conversion
     #analysis
     cd $initial_folder
-    root -l -q DummyDisplay.cc\(\"${output}/${run_file}_$j\",\"${run}_$j\",7\) &
-    root -l -q DummyDisplay.cc\(\"${output}/${run_file}_$j\",\"${run}_$j\",10\) &
-    root -l -q Proto.cc\(\"${output}/${run_file}_$j\",\"${run}_$j\",\"retriggers\"\)
+    root -l -q DummyDisplay.cc\(\"${output}/${run_file}_$j\",\"${run}_$j\",7,\"$cob_positions\"\)  &
+    root -l -q DummyDisplay.cc\(\"${output}/${run_file}_$j\",\"${run}_$j\",10,\"$cob_positions\"\)  &
+    root -l -q Proto.cc\(\"${output}/${run_file}_$j\",\"${run}_$j\",\"retriggers\",\"$cob_positions\"\) 
 done
 
 cd results_monitoring
@@ -38,4 +38,3 @@ cd results_retriggers
 source hadd.sh $run &
 
 #source analyis_run_050xxx_mips.sh
-
