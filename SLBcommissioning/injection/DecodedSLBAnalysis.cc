@@ -54,12 +54,19 @@ std::vector<std::array<float,6>> DecodedSLBAnalysis::HoldscanAnalysis(int sca_=0
   // Signal readout
   Long64_t nbytes = 0, nb = 0;
   int n_SLB=0;
+  std::string progress_bar;
+  double bar_width = 30;
+  int delta_progress_bar = 1000;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
-
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Hold scan "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
     if(jentry==0) n_SLB=n_slboards;
 
     //if(jentry % 1000 !=0 ) continue;
@@ -164,12 +171,19 @@ std::vector<std::array<float,9>> DecodedSLBAnalysis::InjectionAnalysis(int reade
   // Signal readout
   Long64_t nbytes = 0, nb = 0;
   int n_SLB=0;
+  std::string progress_bar;
+  double bar_width = 30;
+  int delta_progress_bar = 1000;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
-
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Injection "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
     if(jentry==0) n_SLB=n_slboards;
 
     //if(jentry % 1000 !=0 ) continue;
@@ -229,4 +243,3 @@ std::vector<std::array<float,9>> DecodedSLBAnalysis::InjectionAnalysis(int reade
   return result;
 
 }
-

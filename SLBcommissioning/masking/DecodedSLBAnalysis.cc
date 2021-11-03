@@ -50,14 +50,19 @@ std::vector<std::array<int,9>>  DecodedSLBAnalysis::NoiseLevels(int acqwindow=15
   // -----------------------------------------------------------------------------------------------------   
   // SCA analysis
   Long64_t nbytes = 0, nb = 0;
+  std::string progress_bar;
+  double bar_width = 30;
+  int delta_progress_bar = 1000;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-
-      if(jentry==0) n_SLB=n_slboards;
-
-    if ( jentry > 1000 && jentry % 1000 ==0 ) std::cout << "Progress: " << 100.*jentry/nentries <<" %"<<endl;
+    if ( jentry > delta_progress_bar && jentry % delta_progress_bar == 0 ) {
+      if (bar_width * jentry / nentries > progress_bar.length()) progress_bar.push_back('#');
+      std::cout << std::flush << "Slow control "
+                << " [" << std::left << std::setw(bar_width) << progress_bar << "] "
+                << std::right << std::setw(ceil(log10(nentries))) << jentry << "/" << nentries << " entries processed\r";
+    }
 
     expected=0.25*acqNumber*float(acqwindow)/60.;
   
@@ -184,7 +189,3 @@ std::vector<std::array<int,9>>  DecodedSLBAnalysis::NoiseLevels(int acqwindow=15
 
   return result;
 }
-
-
-
-
